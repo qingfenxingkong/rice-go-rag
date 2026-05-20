@@ -1,0 +1,9 @@
+.specstory/
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+data/*.index
+data/go_faiss*
+data/go_obo_faiss.index
+paraphrase-multilingual-MiniLM-L12-v2/

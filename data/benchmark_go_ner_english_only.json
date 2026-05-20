@@ -1,0 +1,868 @@
+{
+  "name": "go_ner_benchmark_english_only",
+  "description": "English-only subset extracted from benchmark_go_ner_200",
+  "total_cases": 90,
+  "source": "benchmark_go_ner_200.json",
+  "filter_criteria": "lang == 'en'",
+  "cases": [
+    {
+      "id": 1,
+      "text": "The kinase activity was significantly elevated in drought-stressed rice seedlings.",
+      "gold": [
+        "GO:0016301"
+      ],
+      "lang": "en",
+      "difficulty": "easy"
+    },
+    {
+      "id": 2,
+      "text": "Chloroplast development is tightly coupled to photosynthesis efficiency under high light.",
+      "gold": [
+        "GO:0009507",
+        "GO:0015979"
+      ],
+      "lang": "en",
+      "difficulty": "easy"
+    },
+    {
+      "id": 3,
+      "text": "Cell division was accelerated in the meristematic zone following cytokinin treatment.",
+      "gold": [
+        "GO:0051301"
+      ],
+      "lang": "en",
+      "difficulty": "easy"
+    },
+    {
+      "id": 4,
+      "text": "Signal transduction cascades mediate the plant response to drought and salinity stress.",
+      "gold": [
+        "GO:0007165"
+      ],
+      "lang": "en",
+      "difficulty": "easy"
+    },
+    {
+      "id": 5,
+      "text": "Oxidative phosphorylation efficiency is impaired in plants with dysfunctional mitochondria.",
+      "gold": [
+        "GO:0006119"
+      ],
+      "lang": "en",
+      "difficulty": "easy"
+    },
+    {
+      "id": 6,
+      "text": "Translation efficiency decreased in mutant lines lacking ribosomal assembly factors.",
+      "gold": [
+        "GO:0006412"
+      ],
+      "lang": "en",
+      "difficulty": "easy"
+    },
+    {
+      "id": 7,
+      "text": "DNA repair pathways are activated upon UV irradiation to preserve genomic integrity.",
+      "gold": [
+        "GO:0006281"
+      ],
+      "lang": "en",
+      "difficulty": "easy"
+    },
+    {
+      "id": 8,
+      "text": "Protein phosphorylation by MAP kinases initiates downstream defense signaling cascades.",
+      "gold": [
+        "GO:0006468"
+      ],
+      "lang": "en",
+      "difficulty": "easy"
+    },
+    {
+      "id": 9,
+      "text": "Response to stress genes were highly upregulated in rice leaves under heat shock conditions.",
+      "gold": [
+        "GO:0006950"
+      ],
+      "lang": "en",
+      "difficulty": "easy"
+    },
+    {
+      "id": 10,
+      "text": "Transmembrane transport of potassium ions is critical for stomatal opening and closure.",
+      "gold": [
+        "GO:0055085"
+      ],
+      "lang": "en",
+      "difficulty": "easy"
+    },
+    {
+      "id": 11,
+      "text": "Cell wall organization is essential for maintaining structural integrity during plant elongation.",
+      "gold": [
+        "GO:0071555"
+      ],
+      "lang": "en",
+      "difficulty": "easy"
+    },
+    {
+      "id": 12,
+      "text": "Mitochondrion inheritance is mediated by interactions between mitochondria and the cytoskeleton.",
+      "gold": [
+        "GO:0000001"
+      ],
+      "lang": "en",
+      "difficulty": "easy"
+    },
+    {
+      "id": 13,
+      "text": "ATP synthesis coupled proton transport drives the mitochondrial electrochemical proton gradient.",
+      "gold": [
+        "GO:0015986"
+      ],
+      "lang": "en",
+      "difficulty": "easy"
+    },
+    {
+      "id": 14,
+      "text": "Mitochondrial genome maintenance requires RecA-like recombinases in higher plant cells.",
+      "gold": [
+        "GO:0000002"
+      ],
+      "lang": "en",
+      "difficulty": "easy"
+    },
+    {
+      "id": 15,
+      "text": "Kinase activity and signal transduction are tightly linked nodes in the MAPK cascade.",
+      "gold": [
+        "GO:0016301",
+        "GO:0007165"
+      ],
+      "lang": "en",
+      "difficulty": "easy"
+    },
+    {
+      "id": 16,
+      "text": "Cell division and cell wall organization are coordinately regulated during plant cytokinesis.",
+      "gold": [
+        "GO:0051301",
+        "GO:0071555"
+      ],
+      "lang": "en",
+      "difficulty": "easy"
+    },
+    {
+      "id": 17,
+      "text": "Translation and protein phosphorylation collaboratively regulate protein homeostasis under stress.",
+      "gold": [
+        "GO:0006412",
+        "GO:0006468"
+      ],
+      "lang": "en",
+      "difficulty": "easy"
+    },
+    {
+      "id": 18,
+      "text": "Photosynthesis and ATP synthesis coupled proton transport are both integral membrane-associated processes.",
+      "gold": [
+        "GO:0015979",
+        "GO:0015986"
+      ],
+      "lang": "en",
+      "difficulty": "easy"
+    },
+    {
+      "id": 19,
+      "text": "Signal transduction and response to stress co-regulate innate immunity pathways in rice.",
+      "gold": [
+        "GO:0007165",
+        "GO:0006950"
+      ],
+      "lang": "en",
+      "difficulty": "easy"
+    },
+    {
+      "id": 20,
+      "text": "DNA repair and cell division checkpoints are coupled to ensure genomic fidelity after replication.",
+      "gold": [
+        "GO:0006281",
+        "GO:0051301"
+      ],
+      "lang": "en",
+      "difficulty": "easy"
+    },
+    {
+      "id": 51,
+      "text": "Under drought, protein phosphorylation and signal transduction pathways were enriched in rice flag leaves.",
+      "gold": [
+        "GO:0006468",
+        "GO:0007165"
+      ],
+      "lang": "en",
+      "difficulty": "medium"
+    },
+    {
+      "id": 52,
+      "text": "The MAPK cascade triggered kinase activity to amplify stress signaling, ultimately inducing DNA repair.",
+      "gold": [
+        "GO:0016301",
+        "GO:0007165",
+        "GO:0006281"
+      ],
+      "lang": "en",
+      "difficulty": "medium"
+    },
+    {
+      "id": 53,
+      "text": "Mutant plants showed defects in signal transduction, yet chloroplast ultrastructure remained intact.",
+      "gold": [
+        "GO:0007165",
+        "GO:0009507"
+      ],
+      "lang": "en",
+      "difficulty": "medium"
+    },
+    {
+      "id": 54,
+      "text": "Chloroplast proteome remodeling supports photosynthetic acclimation to fluctuating light intensity.",
+      "gold": [
+        "GO:0009507",
+        "GO:0015979"
+      ],
+      "lang": "en",
+      "difficulty": "medium"
+    },
+    {
+      "id": 55,
+      "text": "The inner mitochondrial membrane houses the respiratory chain driving oxidative phosphorylation and ATP synthesis.",
+      "gold": [
+        "GO:0005743",
+        "GO:0006119",
+        "GO:0015986"
+      ],
+      "lang": "en",
+      "difficulty": "medium"
+    },
+    {
+      "id": 56,
+      "text": "Mitochondrion inheritance is disrupted when cytoskeletal dynamics are perturbed during cell division.",
+      "gold": [
+        "GO:0000001",
+        "GO:0051301"
+      ],
+      "lang": "en",
+      "difficulty": "medium"
+    },
+    {
+      "id": 57,
+      "text": "The coordination of translation and protein phosphorylation ensures accurate proteome adaptation to stress.",
+      "gold": [
+        "GO:0006412",
+        "GO:0006468"
+      ],
+      "lang": "en",
+      "difficulty": "medium"
+    },
+    {
+      "id": 58,
+      "text": "The nucleus integrates transcriptional programs governing response to stress and cell division timing.",
+      "gold": [
+        "GO:0005634",
+        "GO:0006950",
+        "GO:0051301"
+      ],
+      "lang": "en",
+      "difficulty": "medium"
+    },
+    {
+      "id": 59,
+      "text": "Cell wall organization defects compromise mechanical signal transmission during rapid cell division phases.",
+      "gold": [
+        "GO:0071555",
+        "GO:0051301"
+      ],
+      "lang": "en",
+      "difficulty": "medium"
+    },
+    {
+      "id": 60,
+      "text": "Oxidative phosphorylation and transmembrane transport both depend on electrochemical gradients across membranes.",
+      "gold": [
+        "GO:0006119",
+        "GO:0055085"
+      ],
+      "lang": "en",
+      "difficulty": "medium"
+    },
+    {
+      "id": 61,
+      "text": "ATP synthesis coupled proton transport was upregulated alongside active cell division in meristems.",
+      "gold": [
+        "GO:0015986",
+        "GO:0051301"
+      ],
+      "lang": "en",
+      "difficulty": "medium"
+    },
+    {
+      "id": 62,
+      "text": "The protein kinase OsCPK12 activates DNA repair mechanisms in response to oxidative stress.",
+      "gold": [
+        "GO:0016301",
+        "GO:0006281",
+        "GO:0006950"
+      ],
+      "lang": "en",
+      "difficulty": "medium"
+    },
+    {
+      "id": 63,
+      "text": "Mitochondrial genome maintenance is coordinated with DNA repair to preserve organellar genome stability.",
+      "gold": [
+        "GO:0000002",
+        "GO:0006281"
+      ],
+      "lang": "en",
+      "difficulty": "medium"
+    },
+    {
+      "id": 64,
+      "text": "Signal transduction from receptor to nucleus involves sequential kinase phosphorylation events.",
+      "gold": [
+        "GO:0007165",
+        "GO:0005634",
+        "GO:0016301",
+        "GO:0006468"
+      ],
+      "lang": "en",
+      "difficulty": "medium"
+    },
+    {
+      "id": 65,
+      "text": "Chloroplast biogenesis requires coordinated transmembrane import of nucleus-encoded proteins.",
+      "gold": [
+        "GO:0009507",
+        "GO:0055085",
+        "GO:0005634"
+      ],
+      "lang": "en",
+      "difficulty": "medium"
+    },
+    {
+      "id": 66,
+      "text": "Photosynthesis-derived ATP fuels transmembrane transport of sucrose in phloem loading.",
+      "gold": [
+        "GO:0015979",
+        "GO:0055085"
+      ],
+      "lang": "en",
+      "difficulty": "medium"
+    },
+    {
+      "id": 67,
+      "text": "Ribosomal translation and kinase-mediated phosphorylation cooperate to sense nitrogen availability.",
+      "gold": [
+        "GO:0006412",
+        "GO:0016301",
+        "GO:0006468"
+      ],
+      "lang": "en",
+      "difficulty": "medium"
+    },
+    {
+      "id": 68,
+      "text": "Cell wall organization requires controlled transmembrane transport of cell wall precursors.",
+      "gold": [
+        "GO:0071555",
+        "GO:0055085"
+      ],
+      "lang": "en",
+      "difficulty": "medium"
+    },
+    {
+      "id": 69,
+      "text": "Mitochondrion inheritance is coupled to cell division via the fission machinery.",
+      "gold": [
+        "GO:0000001",
+        "GO:0051301"
+      ],
+      "lang": "en",
+      "difficulty": "medium"
+    },
+    {
+      "id": 70,
+      "text": "Oxidative damage triggers response to stress and activates nuclear DNA repair enzymes.",
+      "gold": [
+        "GO:0006950",
+        "GO:0006281",
+        "GO:0005634"
+      ],
+      "lang": "en",
+      "difficulty": "medium"
+    },
+    {
+      "id": 71,
+      "text": "OsWRKY45 regulates kinase activity and modulates response to blast fungus infection.",
+      "gold": [
+        "GO:0016301",
+        "GO:0006950"
+      ],
+      "lang": "en",
+      "difficulty": "medium"
+    },
+    {
+      "id": 72,
+      "text": "Transcriptome analysis indicated elevated cell division coinciding with protein phosphorylation upregulation.",
+      "gold": [
+        "GO:0051301",
+        "GO:0006468"
+      ],
+      "lang": "en",
+      "difficulty": "medium"
+    },
+    {
+      "id": 73,
+      "text": "Chloroplast membrane integrity supports photosynthesis and facilitates transmembrane ion transport.",
+      "gold": [
+        "GO:0009507",
+        "GO:0015979",
+        "GO:0055085"
+      ],
+      "lang": "en",
+      "difficulty": "medium"
+    },
+    {
+      "id": 74,
+      "text": "Mitochondrial inner membrane potential is essential for oxidative phosphorylation efficiency.",
+      "gold": [
+        "GO:0005743",
+        "GO:0006119"
+      ],
+      "lang": "en",
+      "difficulty": "medium"
+    },
+    {
+      "id": 75,
+      "text": "OsDREB2 modulates DNA repair and stress response under high temperature in rice.",
+      "gold": [
+        "GO:0006281",
+        "GO:0006950"
+      ],
+      "lang": "en",
+      "difficulty": "medium"
+    },
+    {
+      "id": 101,
+      "text": "The gene product localizes to the powerhouse organelle inner membrane and participates in the proton gradient-driven synthesis of adenosine triphosphate.",
+      "gold": [
+        "GO:0005743",
+        "GO:0015986"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 102,
+      "text": "Plants lacking this factor show impaired capacity to replicate organellar genomes and accumulate unrepaired strand breaks, ultimately triggering programmed cell death.",
+      "gold": [
+        "GO:0000002",
+        "GO:0006281"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 103,
+      "text": "Loss of this nuclear-localized kinase abolishes downstream phosphorylation cascades and sensitizes cells to genotoxic agents.",
+      "gold": [
+        "GO:0005634",
+        "GO:0016301",
+        "GO:0006468"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 104,
+      "text": "Depletion of the light-harvesting complex impairs the quantum yield of carbon fixation in illuminated leaf tissue.",
+      "gold": [
+        "GO:0015979"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 105,
+      "text": "The organelle responsible for housing the photosynthetic machinery undergoes structural reorganization under photooxidative conditions.",
+      "gold": [
+        "GO:0009507",
+        "GO:0015979"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 106,
+      "text": "A rice factor essential for organellar genome replication co-purifies with proteins involved in strand-break rejoining.",
+      "gold": [
+        "GO:0000002",
+        "GO:0006281"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 107,
+      "text": "Disruption of the proton motive force across the energy-transducing membrane halts the rotary nanomotor driving nucleotide synthesis.",
+      "gold": [
+        "GO:0005743",
+        "GO:0015986",
+        "GO:0006119"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 108,
+      "text": "The cytoplasmic messenger relay converts extracellular hormone perception into nuclear transcriptional reprogramming.",
+      "gold": [
+        "GO:0007165",
+        "GO:0005634",
+        "GO:0006950"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 109,
+      "text": "Failure to partition the double-stranded genome equally between progeny cells leads to aneuploidy and growth arrest.",
+      "gold": [
+        "GO:0051301",
+        "GO:0006281"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 110,
+      "text": "The polypeptide-elongating ribosomal machinery is subject to inhibitory phosphorylation under nutrient deprivation.",
+      "gold": [
+        "GO:0006412",
+        "GO:0006468"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 111,
+      "text": "A transporter embedded in the plastid envelope shuttles carbon skeletons required for amino acid biosynthesis.",
+      "gold": [
+        "GO:0009507",
+        "GO:0055085"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 112,
+      "text": "Under prolonged darkness, the carbon-assimilating reactions cease and the organelle undergoes etioplast conversion.",
+      "gold": [
+        "GO:0015979",
+        "GO:0009507"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 113,
+      "text": "Phosphorylation-dependent activation of the guardian kinase initiates a signaling cascade that halts chromosome segregation.",
+      "gold": [
+        "GO:0016301",
+        "GO:0006468",
+        "GO:0051301"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 114,
+      "text": "The energy released from electron transfer to molecular oxygen is coupled to the vectorial translocation of protons.",
+      "gold": [
+        "GO:0006119",
+        "GO:0015986",
+        "GO:0005743"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 115,
+      "text": "Crosstalk between the organellar DNA surveillance machinery and the cytosolic stress-sensing network modulates adaptive responses.",
+      "gold": [
+        "GO:0000002",
+        "GO:0006281",
+        "GO:0006950"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 116,
+      "text": "An RNA-binding chaperone maintains translational fidelity during heat-induced proteotoxic stress in the cytoplasm.",
+      "gold": [
+        "GO:0006412",
+        "GO:0006950"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 117,
+      "text": "The barrier separating the nuclear compartment from the cytoplasm gates the passage of macromolecular complexes.",
+      "gold": [
+        "GO:0005634",
+        "GO:0055085"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 118,
+      "text": "Sequential phosphorylation of scaffold proteins amplifies the initial ligand-receptor binding event into a sustained transcriptional response.",
+      "gold": [
+        "GO:0007165",
+        "GO:0006468",
+        "GO:0005634"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 119,
+      "text": "A RecQ-family helicase unwinds stalled replication forks in plastid DNA to allow error-free resumption of replication.",
+      "gold": [
+        "GO:0000002",
+        "GO:0006281"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 120,
+      "text": "Vesicle-mediated delivery of glycan polymers to the growing cell plate coordinates with cytokinetic membrane fusion.",
+      "gold": [
+        "GO:0071555",
+        "GO:0051301"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 121,
+      "text": "Suppression of the ATP-generating machinery in the inner membrane sensitizes rice plants to chilling-induced cell death.",
+      "gold": [
+        "GO:0005743",
+        "GO:0006119",
+        "GO:0015986"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 122,
+      "text": "The photoreceptor-controlled developmental switch upregulates carbon-fixation enzyme abundance in emerging seedling leaves.",
+      "gold": [
+        "GO:0015979"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 123,
+      "text": "Phosphoproteomic mapping revealed hyperphosphorylation of a kinase substrate cluster in UV-damaged cells undergoing genome surveillance.",
+      "gold": [
+        "GO:0016301",
+        "GO:0006468",
+        "GO:0006281"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 124,
+      "text": "Fluorescence microscopy demonstrated co-localization of the replication factor with the mitochondrial nucleoid structure.",
+      "gold": [
+        "GO:0000002"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 125,
+      "text": "A long-distance electrical signal propagated through plasmodesmata activates wound-responsive kinase cascades in distal leaves.",
+      "gold": [
+        "GO:0007165",
+        "GO:0016301"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 126,
+      "text": "The penalty for mispartitioning the endosymbiotic genome is heteroplasmy-driven respiratory deficiency in daughter cells.",
+      "gold": [
+        "GO:0000001",
+        "GO:0006119"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 127,
+      "text": "Cotranslational folding guided by ribosome-associated chaperones prevents aggregation of nascent polypeptides during stress.",
+      "gold": [
+        "GO:0006412",
+        "GO:0006950"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 128,
+      "text": "Ion homeostasis across the chloroplast envelope is maintained by a family of antiporters whose activity is light-regulated.",
+      "gold": [
+        "GO:0009507",
+        "GO:0055085"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 129,
+      "text": "The checkpoint kinase phosphorylates histone H2AX at double-strand break sites, recruiting repair factors to nuclear foci.",
+      "gold": [
+        "GO:0016301",
+        "GO:0006281",
+        "GO:0005634"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 130,
+      "text": "Knockdown of the plastid-targeted ribosome recycling factor disrupts organellar translation and chloroplast biogenesis.",
+      "gold": [
+        "GO:0006412",
+        "GO:0009507"
+      ],
+      "lang": "en",
+      "difficulty": "hard"
+    },
+    {
+      "id": 166,
+      "text": "Field trials compared planting density, panicle length, and grain weight across ten cultivars in two consecutive growing seasons.",
+      "gold": [],
+      "lang": "en",
+      "difficulty": "hard-negative"
+    },
+    {
+      "id": 167,
+      "text": "Irrigation scheduling significantly affected tillering rate and final biomass accumulation in paddy rice.",
+      "gold": [],
+      "lang": "en",
+      "difficulty": "hard-negative"
+    },
+    {
+      "id": 168,
+      "text": "The hybrid variety showed superior yield stability across five agro-ecological zones compared with the inbred check.",
+      "gold": [],
+      "lang": "en",
+      "difficulty": "hard-negative"
+    },
+    {
+      "id": 169,
+      "text": "Farmers in the Yangtze River Delta reported earlier heading dates and higher milling quality after adopting the new cultivar.",
+      "gold": [],
+      "lang": "en",
+      "difficulty": "hard-negative"
+    },
+    {
+      "id": 170,
+      "text": "Nitrogen topdressing at panicle initiation increased spikelet number per panicle but reduced filled grain percentage.",
+      "gold": [],
+      "lang": "en",
+      "difficulty": "hard-negative"
+    },
+    {
+      "id": 171,
+      "text": "Remote sensing indices derived from UAV imagery correlated well with manually measured leaf area index values.",
+      "gold": [],
+      "lang": "en",
+      "difficulty": "hard-negative"
+    },
+    {
+      "id": 172,
+      "text": "The lodging resistance of the semi-dwarf lines was evaluated by stem diameter, wall thickness, and bending moment.",
+      "gold": [],
+      "lang": "en",
+      "difficulty": "hard-negative"
+    },
+    {
+      "id": 173,
+      "text": "Grain chalkiness was negatively correlated with slow grain-filling rate during the ripening stage under high night temperature.",
+      "gold": [],
+      "lang": "en",
+      "difficulty": "hard-negative"
+    },
+    {
+      "id": 174,
+      "text": "A genome-wide association study identified SNPs linked to days-to-heading under both long-day and short-day photoperiods.",
+      "gold": [],
+      "lang": "en",
+      "difficulty": "hard-negative"
+    },
+    {
+      "id": 175,
+      "text": "Comparative transcriptomic profiling between indica and japonica subspecies highlighted allelic variation at yield QTLs.",
+      "gold": [],
+      "lang": "en",
+      "difficulty": "hard-negative"
+    },
+    {
+      "id": 176,
+      "text": "Soil organic carbon content and bulk density were the strongest predictors of paddy yield in the Mekong Delta.",
+      "gold": [],
+      "lang": "en",
+      "difficulty": "hard-negative"
+    },
+    {
+      "id": 177,
+      "text": "Agronomic management practices such as alternate wetting and drying reduced methane emissions without penalizing grain yield.",
+      "gold": [],
+      "lang": "en",
+      "difficulty": "hard-negative"
+    },
+    {
+      "id": 178,
+      "text": "Molecular marker-assisted selection accelerated the introgression of blast-resistance loci into elite breeding lines.",
+      "gold": [],
+      "lang": "en",
+      "difficulty": "hard-negative"
+    },
+    {
+      "id": 179,
+      "text": "Post-harvest drying temperature influenced head rice recovery and appearance quality in milled rice samples.",
+      "gold": [],
+      "lang": "en",
+      "difficulty": "hard-negative"
+    },
+    {
+      "id": 180,
+      "text": "The coefficient of variation for 1000-grain weight was lowest in the flat-seedbed transplanting treatment.",
+      "gold": [],
+      "lang": "en",
+      "difficulty": "hard-negative"
+    }
+  ]
+}

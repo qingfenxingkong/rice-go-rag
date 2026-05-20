@@ -1,0 +1,16 @@
+from app.neo4j_client import get_neo4j_client
+client = get_neo4j_client()
+with client._driver.session(database='ricealteromegorto') as s:
+    r = s.run('MATCH (g:Gene) RETURN keys(g) as k LIMIT 1')
+    for rec in r: print('Gene keys:', rec['k'])
+    r = s.run('MATCH (p:PMID) RETURN keys(p) as k LIMIT 1')
+    for rec in r: print('PMID keys:', rec['k'])
+    r = s.run('MATCH (t:RTO_Term) RETURN keys(t) as k LIMIT 1')
+    for rec in r: print('RTO_Term keys:', rec['k'])
+    r = s.run('MATCH (g:Gene)-[r]->(go:GO_Term) RETURN type(r) as rel, keys(g) as gk LIMIT 3')
+    for rec in r: print('Gene->GO rel:', rec['rel'], 'Gene keys:', rec['gk'])
+    r = s.run('MATCH (go:GO_Term)-[r]->(p:PMID) RETURN type(r) as rel, keys(p) as pk LIMIT 3')
+    for rec in r: print('GO->PMID rel:', rec['rel'], 'PMID keys:', rec['pk'])
+    r = s.run('MATCH (t:RTO_Term)-[r]->(go:GO_Term) RETURN type(r) as rel, keys(t) as tk LIMIT 3')
+    for rec in r: print('RTO->GO rel:', rec['rel'], 'RTO keys:', rec['tk'])
+client.close()

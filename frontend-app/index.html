@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>水稻 GO 知识图谱 RAG 问答系统</title>
+  <script src="/node_modules/vis-network/standalone/umd/vis-network.min.js"></script>
+  <style>
+    :root {
+      --bg: #f5f7fa; --bg-card: #ffffff;
+      --border: #e1e4e8; --accent: #2ea043;
+      --accent-glow: rgba(46,160,67,0.2);
+      --text: #24292f; --text-soft: #57606a;
+      --blue: #0969da; --purple: #8250df;
+      --red: #cf222e;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    .header { background: #24292f; padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+    .header-title { font-size: 20px; font-weight: 700; color: #fff; }
+    .header-title em { color: #3fb950; font-style: normal; }
+    .header-sub { font-size: 12px; color: #8b949e; margin-top: 3px; }
+    .sys-badge { display: flex; align-items: center; gap: 7px; padding: 5px 12px; border-radius: 999px; font-size: 12px; font-weight: 500; border: 1px solid rgba(255,255,255,0.2); color: #8b949e; transition: all .3s; }
+    .sys-badge.ok  { color: #3fb950; border-color: rgba(63,185,80,.5); background: rgba(63,185,80,.1); }
+    .sys-badge.err { color: #f85149; border-color: rgba(248,81,73,.5); background: rgba(248,81,73,.1); }
+    .sys-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+    .layout { max-width: 1440px; margin: 0 auto; padding: 24px 20px; display: grid; grid-template-columns: 380px 1fr; gap: 18px; align-items: start; }
+    @media (max-width: 1024px) { .layout { grid-template-columns: 1fr; } }
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    .card:last-child { margin-bottom: 0; }
+    .card-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .badge { font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 999px; background: #dafbe1; color: #1a7f37; border: 1px solid #b4e4be; }
+    textarea { width: 100%; min-height: 85px; background: #f6f8fa; border: 1px solid var(--border); border-radius: 6px; padding: 9px 11px; color: var(--text); font-size: 13px; line-height: 1.55; resize: vertical; font-family: inherit; }
+    textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(46,160,67,.15); }
+    .pills { display: flex; flex-wrap: wrap; gap: 5px; margin: 9px 0; }
+    .pill { padding: 3px 9px; border-radius: 999px; border: 1px solid var(--border); background: #f6f8fa; color: var(--text-soft); font-size: 11px; cursor: pointer; transition: all .2s; }
+    .pill:hover { border-color: var(--accent); color: var(--accent); background: #dafbe1; }
+    .ask-btn { width: 100%; padding: 9px; border-radius: 6px; border: none; background: var(--accent); color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px var(--accent-glow); transition: all .2s; }
+    .ask-btn:hover:not(:disabled) { background: #218739; transform: translateY(-1px); }
+    .ask-btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+    .hint { font-size: 11px; color: var(--text-soft); margin-top: 5px; }
+    .answer-box { background: #f6f8fa; border: 1px solid var(--border); border-radius: 6px; padding: 11px; font-size: 13px; line-height: 1.7; min-height: 60px; max-height: 380px; overflow: auto; white-space: pre-wrap; word-break: break-word; }
+    .answer-placeholder { color: var(--text-soft); font-style: italic; }
+    .error-box { background: #fff8f8; border: 1px solid #ffcdd2; border-radius: 6px; padding: 9px 11px; font-size: 13px; color: var(--red); }
+    .status-bar { margin-top: 7px; font-size: 11px; color: var(--text-soft); min-height: 15px; display: flex; align-items: center; gap: 6px; }
+    .spinner { width: 11px; height: 11px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .6s linear infinite; flex-shrink: 0; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .sys-kv { font-size: 12px; display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; }
+    .sys-kv dt { color: var(--text-soft); }
+    .sys-kv dd { color: var(--text); word-break: break-all; }
+    .ic-toggle { display:flex; align-items:center; gap:10px; margin-top:10px; padding:10px 12px; background:#f6f8fa; border:1px solid var(--border); border-radius:8px; }
+    .ic-toggle label { font-size:12px; color:var(--text); flex:1; }
+    .ic-toggle label span { font-size:11px; color:var(--text-soft); display:block; margin-top:2px; }
+    .toggle-switch { position:relative; width:36px; height:20px; flex-shrink:0; }
+    .toggle-switch input { opacity:0; width:0; height:0; }
+    .toggle-slider { position:absolute; inset:0; background:#ccc; border-radius:20px; cursor:pointer; transition:.3s; }
+    .toggle-slider:before { content:''; position:absolute; width:14px; height:14px; left:3px; bottom:3px; background:#fff; border-radius:50%; transition:.3s; }
+    input:checked + .toggle-slider { background:var(--accent); }
+    input:checked + .toggle-slider:before { transform:translateX(16px); }
+    .ic-status { font-size:11px; padding:2px 8px; border-radius:999px; font-weight:500; }
+    .ic-status.on  { background:#dafbe1; color:#1a7f37; border:1px solid #b4e4be; }
+    .ic-status.off { background:#f6f8fa; color:var(--text-soft); border:1px solid var(--border); }
+    #graphWrap { position: relative; }
+    #graphContainer { width: 100%; height: 460px; background: #fff; border: 1px solid var(--border); border-radius: 8px; }
+    .graph-empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--text-soft); font-size: 13px; pointer-events: none; }
+    .graph-empty .icon { font-size: 38px; opacity: .2; }
+    .graph-legend { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.96); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 11px; color: var(--text-soft); z-index: 10; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+    .graph-legend-title { font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .graph-legend-item { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
+    .graph-legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .node-hover-card { position:absolute; z-index:20; min-width:260px; max-width:420px; max-height:260px; overflow:auto; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:rgba(255,255,255,.98); box-shadow:0 8px 24px rgba(0,0,0,.18); font-size:12px; line-height:1.5; color:var(--text); pointer-events:none; display:none; }
+    .node-hover-card b { color:#111827; }
+    .sources-list { display: flex; flex-direction: column; gap: 10px; max-height: 380px; overflow: auto; }
+    .src-card { background: #f6f8fa; border: 1px solid var(--border); border-radius: 7px; padding: 10px 12px; font-size: 12px; }
+    .src-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .src-id { font-weight: 600; color: var(--blue); }
+    .src-score { font-size: 11px; color: var(--purple); }
+    .src-name { font-weight: 500; color: var(--text); margin-bottom: 2px; }
+    .src-ns { font-size: 11px; color: var(--blue); margin-bottom: 4px; }
+    .src-desc { color: var(--text-soft); line-height: 1.5; }
+    .ner-choice-box { margin-top: 10px; border: 1px solid var(--border); border-radius: 8px; background: #f6f8fa; padding: 10px; }
+    .ner-choice-top { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:8px; }
+    .ner-choice-top label { font-size:12px; color:var(--text); display:inline-flex; align-items:center; gap:6px; }
+    .ner-choice-top select { padding:5px 8px; border:1px solid var(--border); border-radius:6px; background:#fff; font-size:12px; }
+    .method-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+    .method-item { border:1px solid var(--border); border-radius:6px; background:#fff; padding:6px; font-size:11px; line-height:1.45; color:var(--text-soft); }
+    .method-item b { color: var(--text); }
+  </style>
+</head>
+<body>
+<header class="header">
+  <div>
+    <div class="header-title">&#127807; 水稻 GO <em>知识图谱</em> RAG 问答系统</div>
+    <div class="header-sub">Neo4j &middot; 语义向量检索 &middot; DeepSeek LLM</div>
+  </div>
+  <div id="sysBadge" class="sys-badge"><span class="sys-dot"></span><span id="sysText">连接中...</span></div>
+</header>
+<div class="layout">
+  <div>
+    <div class="card">
+      <div class="card-title">提出问题 <span class="badge">Ctrl+Enter</span></div>
+      <textarea id="question" placeholder="例如：水稻线粒体相关的遗传过程有哪些？"></textarea>
+      <div class="pills">
+        <span class="pill" data-q="水稻线粒体相关的遗传过程有哪些？">线粒体遗传</span>
+        <span class="pill" data-q="与水稻抗病性相关的生物过程有哪些？">抗病性</span>
+        <span class="pill" data-q="水稻光合作用相关的分子功能有哪些？">光合作用</span>
+        <span class="pill" data-q="水稻细胞壁合成相关的生物过程有哪些？">细胞壁合成</span>
+      </div>
+      <button id="askBtn" class="ask-btn">&#128640; 发送问题</button>
+      <div class="hint">Ctrl+Enter 快速发送</div>
+    </div>
+    <div class="card">
+      <div class="card-title">AI 回答</div>
+      <div id="errorBox" class="error-box" style="display:none;"></div>
+      <div id="answerBox" class="answer-box"><span class="answer-placeholder">在上方输入问题，AI 将基于水稻 GO 知识图谱为你解答...</span></div>
+      <div class="status-bar" id="statusBar"></div>
+    </div>
+    <div class="card" id="nerChoiceCard">
+      <div class="card-title">问答检索策略选择</div>
+      <div class="ner-choice-box">
+        <div class="ner-choice-top">
+          <label><input type="checkbox" id="useNerAssist"> 启用 NER 辅助检索</label>
+          <select id="nerMethodChoice" disabled>
+            <option value="dict">dict</option>
+            <option value="vector">vector</option>
+            <option value="llm">llm</option>
+            <option value="ensemble" selected>ensemble</option>
+          </select>
+        </div>
+        <div class="method-grid">
+          <div class="method-item"><b>dict</b><br>优点：速度快、可解释。<br>缺点：对非标准表达召回弱。</div>
+          <div class="method-item"><b>vector</b><br>优点：语义召回好。<br>缺点：可能召回语义相近误匹配。</div>
+          <div class="method-item"><b>llm</b><br>优点：复杂语境理解强。<br>缺点：耗时高、成本高。</div>
+          <div class="method-item"><b>ensemble</b><br>优点：综合效果最佳。<br>缺点：链路更复杂，延迟较高。</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">系统信息</div>
+      <dl class="sys-kv" id="sysKv"><dt>状态</dt><dd>获取中...</dd></dl>
+      <div class="ic-toggle">
+        <label for="icToggle">
+          使用 IC 压缩索引
+          <span>启用后问答系统使用代表性术语检索，更精准；需先运行 build_ic_index.py</span>
+        </label>
+        <span id="icStatus" class="ic-status off">全量</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="icToggle" onchange="toggleIC(this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="card">
+      <div class="card-title">知识关系图谱</div>
+      <div id="graphWrap">
+        <div id="graphContainer"></div>
+        <div id="nodeHoverCard" class="node-hover-card"></div>
+        <div class="graph-empty" id="graphEmpty"><div class="icon">&#128376;</div><div>提问后将展示相关节点的关系网络</div></div>
+      </div>
+      <div id="nodePinPanel" style="display:none;margin-top:14px;border:1px solid var(--border);border-radius:10px;background:#fff;box-shadow:0 4px 16px rgba(0,0,0,.10);">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px 6px;border-bottom:1px solid var(--border);">
+          <span style="font-size:13px;font-weight:600;color:var(--text);"><span id="nodePinType" style="display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;margin-right:6px;"></span>节点详情</span>
+          <button onclick="document.getElementById('nodePinPanel').style.display='none'" style="border:none;background:none;cursor:pointer;font-size:16px;color:var(--text-soft);line-height:1;">&times;</button>
+        </div>
+        <dl id="nodePinContent" class="sys-kv" style="padding:12px 14px;max-height:260px;overflow:auto;column-gap:12px;"></dl>
+      </div>
+    </div>
+    <div class="card" id="sourcesCard" style="display:none;">
+      <div class="card-title" id="sourcesTitle">相关 GO 术语</div>
+      <div class="sources-list" id="sourcesList"></div>
+    </div>
+  </div>
+</div>
+<script>var API='http://localhost:8000';var visNet=null;var nodeById={};
+  var NC={'GO_Term':{bg:'#2ea043',bd:'#218739'},'Gene':{bg:'#0969da',bd:'#0550ae'},'PMID':{bg:'#bf8700',bd:'#9a6700'},'RTO_Term':{bg:'#8250df',bd:'#6e40c9'}};
+  async function checkHealth(){
+    try{
+      var r=await fetch(API+'/health');var d=await r.json();
+      document.getElementById('sysBadge').className='sys-badge ok';
+      document.getElementById('sysText').textContent='✓ 系统正常';
+      document.getElementById('sysKv').innerHTML='<dt>后端</dt><dd>'+d.status+'</dd><dt>向量索引</dt><dd>'+d.vector_index+'</dd><dt>Neo4j</dt><dd>'+d.neo4j_uri+'</dd><dt>模型</dt><dd>'+d.model+'</dd>';
+      // 同步 IC 索引状态
+      try {
+        var sr = await fetch(API+'/admin/index_status');
+        if (sr.ok) {
+          var sd = await sr.json();
+          var cb = document.getElementById('icToggle');
+          var st = document.getElementById('icStatus');
+          cb.checked = sd.use_ic_index;
+          if (sd.use_ic_index) {
+            st.textContent = 'IC (' + sd.term_count + ')';
+            st.className = 'ic-status on';
+          } else {
+            st.textContent = '全量 (' + sd.term_count + ')';
+            st.className = 'ic-status off';
+          }
+        }
+      } catch(e) {}
+    }catch(e){
+      document.getElementById('sysBadge').className='sys-badge err';
+      document.getElementById('sysText').textContent='✗ 后端离线';
+      document.getElementById('sysKv').innerHTML='<dt>错误</dt><dd>无法连接后端</dd>';
+    }
+  }
+
+  async function toggleIC(enable) {
+    var st = document.getElementById('icStatus');
+    st.textContent = '切换中...';
+    st.className = 'ic-status off';
+    try {
+      var resp = await fetch(API + '/admin/toggle_ic_index?enable=' + enable, {method: 'POST'});
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var d = await resp.json();
+      if (enable) {
+        st.className = 'ic-status on';
+        st.textContent = 'IC';
+      } else {
+        st.className = 'ic-status off';
+        st.textContent = '全量';
+      }
+      // 刷新术语数量
+      setTimeout(checkHealth, 500);
+    } catch(e) {
+      st.textContent = '失败';
+      console.error('切换 IC 索引失败:', e);
+    }
+  }
+  function initGraph(){
+    var c=document.getElementById('graphContainer');
+    var opts={
+      physics:{enabled:true,stabilization:{iterations:150,fit:true},barnesHut:{gravitationalConstant:-22000,centralGravity:0.3,springLength:180}},
+      nodes:{shape:'dot',size:28,borderWidth:2,font:{size:11,color:'#ffffff',bold:true,strokeWidth:3,strokeColor:'rgba(0,0,0,0.5)'}},
+      edges:{width:1.5,color:{color:'#adb5bd',highlight:'#2ea043'},font:{size:10,color:'#57606a',strokeWidth:2,strokeColor:'#ffffff'},smooth:{type:'curvedCW',roundness:0.2},arrows:{to:{enabled:true,scaleFactor:0.5}}},
+      interaction:{hover:true,tooltipDelay:100000}
+    };
+    if(visNet)visNet.destroy();
+    visNet=new vis.Network(c,{nodes:[],edges:[]},opts);
+
+    var card=document.getElementById('nodeHoverCard');
+    var hoveredNodeId = null;
+    function hideCard(){ hoveredNodeId=null; if(card) card.style.display='none'; }
+    function placeCardByPos(x,y){
+      if(!card) return;
+      var maxX = Math.max(20, c.clientWidth - 300);
+      var maxY = Math.max(20, c.clientHeight - 180);
+      card.style.left = Math.min(x + 14, maxX) + 'px';
+      card.style.top  = Math.min(y + 14, maxY) + 'px';
+    }
+    function showCard(nodeId, evt){
+      if(!card) return;
+      var n=nodeById[nodeId];
+      if(!n) return;
+      hoveredNodeId = nodeId;
+      card.innerHTML = formatNodeTitle(n);
+      if(evt && evt.pointer && evt.pointer.DOM){
+        placeCardByPos(evt.pointer.DOM.x, evt.pointer.DOM.y);
+      }
+      card.style.display='block';
+    }
+
+    visNet.on('hoverNode', function(p){ showCard(p.node, p); });
+    visNet.on('blurNode', hideCard);
+    visNet.on('dragStart', hideCard);
+    visNet.on('zoom', hideCard);
+    visNet.on('mousemove', function(p){
+      if(!hoveredNodeId || !card || card.style.display==='none') return;
+      if(p && p.pointer && p.pointer.DOM){
+        placeCardByPos(p.pointer.DOM.x, p.pointer.DOM.y);
+      }
+    });
+
+    // 点击节点：固定详情面板
+    visNet.on('click', function(p){
+      var panel = document.getElementById('nodePinPanel');
+      var content = document.getElementById('nodePinContent');
+      var typeTag = document.getElementById('nodePinType');
+      if(!panel || !content) return;
+      if(!p.nodes || p.nodes.length === 0){ return; }
+      var nodeId = p.nodes[0];
+      var n = nodeById[nodeId];
+      if(!n) return;
+      // 设置类型标签颜色
+      var typeColors = {
+        'GO_Term':  {bg:'#dafbe1',color:'#1a7f37'},
+        'Gene':     {bg:'#ddf4ff',color:'#0969da'},
+        'PMID':     {bg:'#fff3cd',color:'#9a6700'},
+        'RTO_Term': {bg:'#f3eeff',color:'#8250df'}
+      };
+      var tc = typeColors[n.node_type] || {bg:'#f6f8fa',color:'#57606a'};
+      typeTag.textContent = n.node_type || 'Node';
+      typeTag.style.background = tc.bg;
+      typeTag.style.color = tc.color;
+      typeTag.style.border = '1px solid ' + tc.color + '44';
+      // 构建字段列表
+      var fields = [
+        ['ID', n.id],
+        ['名称', n.label],
+        ['类型', n.node_type],
+        ['命名空间', n.namespace],
+        ['描述', n.description],
+        ['备注', n.comment],
+        ['分数', n.score]
+      ];
+      // 追加其他未知字段
+      Object.keys(n).forEach(function(k){
+        if(['id','label','node_type','namespace','description','comment','score'].indexOf(k) >= 0) return;
+        if(n[k] == null) return;
+        fields.push([k, n[k]]);
+      });
+      content.innerHTML = fields
+        .filter(function(f){ return f[1] != null && String(f[1]).trim() !== '' && String(f[1]) !== 'null'; })
+        .map(function(f){ return '<dt>'+f[0]+'</dt><dd style="word-break:break-all">'+String(f[1])+'</dd>'; })
+        .join('');
+      panel.style.display = '';
+      panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+    });
+  }
+  function formatNodeTitle(n){
+    var rows=[];
+    // 按更友好的顺序展示
+    if(n.id!=null) rows.push('<b>ID:</b> '+String(n.id));
+    if(n.label!=null) rows.push('<b>名称:</b> '+String(n.label));
+    if(n.node_type!=null) rows.push('<b>类型:</b> '+String(n.node_type));
+    if(n.namespace!=null) rows.push('<b>命名空间:</b> '+String(n.namespace));
+    if(n.description!=null) rows.push('<b>描述:</b> '+String(n.description));
+    if(n.comment!=null) rows.push('<b>备注:</b> '+String(n.comment));
+    if(n.score!=null) rows.push('<b>分数:</b> '+String(n.score));
+    // 其余字段兜底展示
+    Object.keys(n).forEach(function(k){
+      if(['id','label','node_type','namespace','description','comment','score'].indexOf(k)>=0) return;
+      if(n[k]==null) return;
+      rows.push('<b>'+k+':</b> '+String(n[k]));
+    });
+    return rows.join('<br>');
+  }
+
+  function renderGraph(nodes,edges){
+    nodeById={};
+    nodes.forEach(function(n){ nodeById[n.id]=n; });
+    document.getElementById('graphEmpty').style.display='none';
+    var wrap=document.getElementById('graphWrap');
+    var old=wrap.querySelector('.graph-legend');if(old)old.remove();
+    var leg=document.createElement('div');leg.className='graph-legend';
+    leg.innerHTML='<div class="graph-legend-title">节点类型</div>'+
+      '<div class="graph-legend-item"><span class="graph-legend-dot" style="background:#2ea043"></span>GO 术语</div>'+
+      '<div class="graph-legend-item"><span class="graph-legend-dot" style="background:#0969da"></span>基因</div>'+
+      '<div class="graph-legend-item"><span class="graph-legend-dot" style="background:#bf8700"></span>文献 PMID</div>'+
+      '<div class="graph-legend-item"><span class="graph-legend-dot" style="background:#8250df"></span>RTO 术语</div>';
+    wrap.appendChild(leg);
+    var vN=nodes.map(function(n){
+      var c=NC[n.node_type]||NC['GO_Term'];
+      var lbl=n.label&&n.label.length>18?n.label.substring(0,16)+'...':n.label||n.id;
+      return{id:n.id,label:lbl,title:formatNodeTitle(n),
+        color:{background:c.bg,border:c.bd,highlight:{background:c.bg,border:c.bd}},
+        font:{color:'#ffffff',size:11,bold:true}};
+    });
+    var vE=edges.map(function(e,i){return{id:i,from:e.source,to:e.target,label:e.relationship,title:e.relationship};});
+    if(!visNet) initGraph();
+    if(!visNet){console.error('vis-network 初始化失败，请检查 vis-network.min.js 是否加载');return;}
+    visNet.setData({nodes:vN,edges:vE});
+    visNet.fit({animation:{duration:800,easingFunction:'easeInOutQuad'}});
+  }
+  function renderSources(sources){
+    if(!sources||sources.length===0)return;
+    document.getElementById('sourcesCard').style.display='';
+    document.getElementById('sourcesTitle').textContent='相关 GO 术语（'+sources.length+' 条）';
+    document.getElementById('sourcesList').innerHTML=sources.map(function(s){
+      return'<div class="src-card"><div class="src-head"><span class="src-id">'+s.go_id+'</span><span class="src-score">相似度 '+(s.score*100).toFixed(1)+'%</span></div>'+
+        '<div class="src-name">'+s.name+'</div><div class="src-ns">'+s.namespace+'</div><div class="src-desc">'+(s.description||'')+'</div></div>';
+    }).join('');
+  }
+  function setStatus(msg,loading){
+    var bar=document.getElementById('statusBar');
+    bar.innerHTML=loading?'<div class="spinner"></div><span>'+msg+'</span>':(msg?'<span>'+msg+'</span>':'');
+  }
+  async function askQuestion(){
+    var q=document.getElementById('question').value.trim();if(!q)return;
+    var btn=document.getElementById('askBtn'),aBox=document.getElementById('answerBox'),eBox=document.getElementById('errorBox');
+    btn.disabled=true;btn.textContent='⏳ 生成中...';
+    eBox.style.display='none';aBox.innerHTML='';
+    document.getElementById('sourcesCard').style.display='none';
+    document.getElementById('graphEmpty').style.display='';
+    var useNer = document.getElementById('useNerAssist').checked;
+    var nerMethod = document.getElementById('nerMethodChoice').value;
+    var strategyText = useNer ? ('NER-' + nerMethod + '（balanced）') : '仅语义检索';
+    setStatus('正在检索 GO 术语并调用大模型，请稍候... 当前策略：' + strategyText,true);
+    try{
+      var resp=await fetch(API+'/ask_stream',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q,use_ner:useNer,ner_method:nerMethod,ner_ensemble_mode:'balanced'})});
+      if(!resp.ok){var t=await resp.text();throw new Error('HTTP '+resp.status+': '+t);}
+      if(resp.body&&resp.body.getReader){
+        var reader=resp.body.getReader(),decoder=new TextDecoder('utf-8'),full='';
+        while(true){var res=await reader.read();if(res.done)break;full+=decoder.decode(res.value,{stream:true});aBox.textContent=full;aBox.scrollTop=aBox.scrollHeight;}
+      }else{aBox.textContent=await resp.text();}
+      setStatus('✓ 回答已生成（策略：' + strategyText + '）',false);
+      try{
+        var gr=await fetch(API+'/graph',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q,use_ner:useNer,ner_method:nerMethod,ner_ensemble_mode:'balanced'})});
+        if(gr.ok){var gd=await gr.json();if(gd.nodes&&gd.nodes.length>0)renderGraph(gd.nodes,gd.edges||[]);}
+      }catch(ge){console.warn('图谱失败:',ge);}
+      try{
+        var ar=await fetch(API+'/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q,use_ner:useNer,ner_method:nerMethod,ner_ensemble_mode:'balanced'})});
+        if(ar.ok){var ad=await ar.json();renderSources(ad.sources||[]);}
+      }catch(se){console.warn('术语失败:',se);}
+    }catch(err){
+      aBox.innerHTML='';eBox.style.display='';eBox.textContent='请求失败：'+err.message;setStatus('',false);
+    }finally{btn.disabled=false;btn.textContent='🚀 发送问题';}
+  }
+  document.getElementById('askBtn').addEventListener('click',askQuestion);
+  document.getElementById('question').addEventListener('keydown',function(e){if((e.ctrlKey||e.metaKey)&&e.key==='Enter')askQuestion();});
+  document.querySelectorAll('.pill').forEach(function(el){el.addEventListener('click',function(){document.getElementById('question').value=el.getAttribute('data-q')||'';});});
+  var useNerAssist = document.getElementById('useNerAssist');
+  var nerMethodChoice = document.getElementById('nerMethodChoice');
+  if (useNerAssist && nerMethodChoice) {
+    useNerAssist.addEventListener('change', function(){
+      nerMethodChoice.disabled = !useNerAssist.checked;
+    });
+  }
+
+  checkHealth();initGraph();setInterval(checkHealth,30000);</script>
+</body>
+</html>
